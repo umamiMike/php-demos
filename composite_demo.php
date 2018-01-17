@@ -1,6 +1,8 @@
 <?php
-
-abstract class OnTheBookShelf {
+abstract class OnTheShelf {
+    abstract function getSize();
+}
+abstract class BooksOnTheShelf extends OnTheShelf {
     abstract function getBookInfo($previousBook);
     abstract function getBookCount();
     abstract function setBookCount($new_count);
@@ -8,12 +10,23 @@ abstract class OnTheBookShelf {
     abstract function removeBook($oneBook);
 }
 
-class OneBook extends OnTheBookShelf {
+abstract class OtherStuff extends OnTheShelf {
+    function getSize()
+    {
+        return false;
+    }
+
+}
+class Book extends BooksOnTheShelf {
     private $title;
     private $author;
     function __construct($title, $author) {
       $this->title = $title;
       $this->author = $author;
+    }
+    public function getSize()
+    {
+        return false;
     }
     function getBookInfo($bookToGet) {
       if (1 == $bookToGet) {
@@ -36,11 +49,15 @@ class OneBook extends OnTheBookShelf {
     }
 }
 
-class SeveralBooks extends OnTheBookShelf {
+class BookCollection extends BooksOnTheShelf {
     private $oneBooks = array();
     private $bookCount;
     public function __construct() {
       $this->setBookCount(0);
+    }
+    public function getSize()
+    {
+        return false;
     }
     public function getBookCount() {
       return $this->bookCount;
@@ -78,48 +95,48 @@ class SeveralBooks extends OnTheBookShelf {
   writeln("BEGIN TESTING COMPOSITE PATTERN");
   writeln('');
  
-  $firstBook = new OneBook('Core PHP Programming, Third Edition', 'Atkinson and Suraski');
+  $firstBook = new Book('Core PHP Programming, Third Edition', 'Atkinson and Suraski');
   writeln('(after creating first book) oneBook info: ');
   writeln($firstBook->getBookInfo(1));
   writeln('');
  
-  $secondBook = new OneBook('PHP Bible', 'Converse and Park');
+  $secondBook = new Book('PHP Bible', 'Converse and Park');
   writeln('(after creating second book) oneBook info: ');
   writeln($secondBook->getBookInfo(1));
   writeln('');
 
-  $thirdBook = new OneBook('Design Patterns', 'Gamma, Helm, Johnson, and Vlissides');
+  $thirdBook = new Book('Design Patterns', 'Gamma, Helm, Johnson, and Vlissides');
   writeln('(after creating third book) oneBook info: ');
   writeln($thirdBook->getBookInfo(1));
   writeln('');
 
-  $books = new SeveralBooks();
+  $books = new BookCollection();
 
   $booksCount = $books->addBook($firstBook);
-  writeln('(after adding firstBook to books) SeveralBooks info : ');
+  writeln('(after adding firstBook to books) BookCollection info : ');
   writeln($books->getBookInfo($booksCount));
   writeln('');
 
   $booksCount = $books->addBook($secondBook);
-  writeln('(after adding secondBook to books) SeveralBooks info : ');
+  writeln('(after adding secondBook to books) BookCollection info : ');
   writeln($books->getBookInfo($booksCount));
   writeln('');
 
   $booksCount = $books->addBook($thirdBook);
-  writeln('(after adding thirdBook to books) SeveralBooks info : ');
+  writeln('(after adding thirdBook to books) BookCollection info : ');
   writeln($books->getBookInfo($booksCount));
   writeln('');
 
   $booksCount = $books->removeBook($firstBook);
-  writeln('(after removing firstBook from books) SeveralBooks count : ');
+  writeln('(after removing firstBook from books) BookCollection count : ');
   writeln($books->getBookCount());
   writeln('');
  
-  writeln('(after removing firstBook from books) SeveralBooks info 1 : ');
+  writeln('(after removing firstBook from books) BookCollection info 1 : ');
   writeln($books->getBookInfo(1));
   writeln('');
  
-  writeln('(after removing firstBook from books) SeveralBooks info 2 : ');
+  writeln('(after removing firstBook from books) BookCollection info 2 : ');
   writeln($books->getBookInfo(2));
   writeln('');
 
