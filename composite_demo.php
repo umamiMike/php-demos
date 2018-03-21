@@ -1,8 +1,26 @@
 <?php
-abstract class OnTheShelf {
-    abstract function getSize();
+
+interface canBeRead {
+public function readMe($text);
 }
-abstract class BooksOnTheShelf extends OnTheShelf {
+abstract class OnTheShelf {
+    protected $name;
+    abstract function getSize();
+    public static function doSomething()
+    {
+        return "I do nothing";
+    }
+}
+interface Burnable {
+    public function setBurnRate();
+}
+class Pottery extends OnTheShelf {
+  
+    public function getSize(){
+    }
+
+}
+abstract class BooksOnTheShelf extends OnTheShelf implements Burnable{
     abstract function getBookInfo($previousBook);
     abstract function getBookCount();
     abstract function setBookCount($new_count);
@@ -11,18 +29,37 @@ abstract class BooksOnTheShelf extends OnTheShelf {
 }
 
 abstract class OtherStuff extends OnTheShelf {
+    private $color;
     function getSize()
     {
         return false;
     }
 
 }
-class Book extends BooksOnTheShelf {
+class Rock implements Burnable {
+
+    public function setBurnRate()
+    {
+        echo "I am a rock and therefore probably wont burn, unless you superheat me in a volcano";
+    }
+
+}
+class Book extends BooksOnTheShelf implements canBeRead {
     private $title;
     private $author;
     function __construct($title, $author) {
       $this->title = $title;
       $this->author = $author;
+    }
+    public function getName(){
+        
+      return $this->name;
+    }
+    public function setBurnRate(){
+        echo "I burn quickly because I am made of paper";
+    }
+    public function setName($newName){
+      return $this->name = $newName;
     }
     public function getSize()
     {
@@ -47,11 +84,20 @@ class Book extends BooksOnTheShelf {
     function removeBook($oneBook) {
       return FALSE;
     }
+    function readMe($text){
+        return $text;
+    }
+    public static function doSomething(){
+        return "read me seymour";
+    }
 }
 
 class BookCollection extends BooksOnTheShelf {
     private $oneBooks = array();
     private $bookCount;
+    public function setBurnRate() {
+
+    }
     public function __construct() {
       $this->setBookCount(0);
     }
@@ -91,14 +137,18 @@ class BookCollection extends BooksOnTheShelf {
       return $this->getBookCount();
     }
 }
-
+$rule = "\n===================================================\n";
   writeln("BEGIN TESTING COMPOSITE PATTERN");
-  writeln('');
- 
+  writeln(''. $rule);
+  writeln('I am abstract class OnTheShelf and: ' . OnTheShelf::doSomething());
+  writeln('I am a Book class and: ' . Book::doSomething());
   $firstBook = new Book('Core PHP Programming, Third Edition', 'Atkinson and Suraski');
+  $firstBook->setName("Snort me");
   writeln('(after creating first book) oneBook info: ');
   writeln($firstBook->getBookInfo(1));
-  writeln('');
+  writeln("and the book name is:");
+  writeln($firstBook->getName());
+  writeln(''. $rule);
  
   $secondBook = new Book('PHP Bible', 'Converse and Park');
   writeln('(after creating second book) oneBook info: ');
@@ -132,6 +182,10 @@ class BookCollection extends BooksOnTheShelf {
   writeln($books->getBookCount());
   writeln('');
  
+  writeln('doSomething is a static function  in the OnTheShelf abstract class, I am checking that it will work here ');
+  writeln($books::doSomething());
+  writeln('');
+
   writeln('(after removing firstBook from books) BookCollection info 1 : ');
   writeln($books->getBookInfo(1));
   writeln('');
@@ -139,6 +193,12 @@ class BookCollection extends BooksOnTheShelf {
   writeln('(after removing firstBook from books) BookCollection info 2 : ');
   writeln($books->getBookInfo(2));
   writeln('');
+
+ $rock = new Rock();
+  $rock->setBurnRate();
+  writeln('------');
+  $secondBook->setBurnRate();
+
 
   writeln('END TESTING COMPOSITE PATTERN');
  
