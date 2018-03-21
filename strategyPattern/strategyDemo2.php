@@ -22,13 +22,27 @@ class testContext {
     public function printTest() {
       return $this->strategy->printTest();
     }
+    public function printId() {
+        return $this->strategy->printId();
+    }
 }
-abstract class Test 
+abstract class Proto 
+{
+    protected $id;
+
+}
+abstract class Test extends Proto
 {
     protected $name;
     public function __construct($name_in) 
     {
         $this->name = $name_in;
+        $this->id = rand(1,100);
+    }
+    public function printId()
+    {
+        echo $this->id;
+        echo "\n";
     }
 }
 
@@ -52,6 +66,10 @@ class MQ extends Test implements StrategyInterface {
 
 }
 class Intra extends Test implements StrategyInterface {
+    function __construct()
+    {
+        parent::__construct();
+    }
     public function printTest()
     {
         echo "I am the I am the " . $this->name . "!!!\n";
@@ -84,7 +102,8 @@ class Snot extends Test implements StrategyInterface {
   writeln('test 3 - show name context S');
   writeln($strategyContextS->printTest());
   writeln('');
-
+  writeln('printing id of intra');
+$strategyContextC->printId();
   writeln('END TESTING STRATEGY PATTERN');
 
   function writeln($line_in) {
